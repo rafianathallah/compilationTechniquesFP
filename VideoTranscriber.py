@@ -139,8 +139,8 @@ class Ui_VideoTranscriber(object):
         self.transcribedTextBox.setPlaceholderText(_translate("VideoTranscriber", "Your transcription will go here"))
         self.openFileButton.setText(_translate("VideoTranscriber", "Open File"))
         self.outputFile.setPlaceholderText(_translate("VideoTranscriber", "Insert name of text file that will be generated here"))
-        self.LABELselectedfile.setText(_translate("VideoTranscriber", "Selected file"))
-        self.LABELoutputname.setText(_translate("VideoTranscriber", "Output name"))
+        self.LABELselectedfile.setText(_translate("VideoTranscriber", "Selected file:"))
+        self.LABELoutputname.setText(_translate("VideoTranscriber", "Output file:"))
         self.LABELTRANCSCRIPTION.setText(_translate("VideoTranscriber", "Transcription:"))
         self.statusLabel.setText(_translate("VideoTranscriber", "Welcome to our video transcribing tool! Waiting for inputs...."))
         self.startTranscribeButton.setText(_translate("VideoTranscriber", "Start transcription"))
@@ -252,7 +252,8 @@ class convertVideoToAudioThread(QThread):
         audioclip = AudioFileClip(self.mp4FileName)
         audioclip.write_audiofile(self.audioFileName)
 
-#continuation of parser where we use google Web Speech API to match the words
+#continuation of parser where we use google Web Speech API to match the words,
+#prints out (unknown word) when encountering an unknown word in the dialogues
 class transcriptionThread(QThread):
     change_value = pyqtSignal(int)
     def __init__(self, totalduration, audioFileName, outputFileName):
@@ -276,6 +277,7 @@ class transcriptionThread(QThread):
             except:
                 missingwordcount += 1
                 print("Skipping unknown word....")
+                f.write("(unknown word) ")
                 continue
             f.close()
         print("Skipped words:", missingwordcount, "words")
